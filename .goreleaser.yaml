@@ -1,0 +1,62 @@
+version: 2
+
+before:
+  hooks:
+    - npm --prefix frontend ci
+    - npm --prefix frontend run build
+
+builds:
+  - id: panel
+    env:
+      - CGO_ENABLED=0
+    binary: panel
+    main: ./cmd/panel/main.go
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+  - id: pam-socks
+    env:
+      - CGO_ENABLED=0
+    binary: pam-socks
+    main: ./cmd/pam-socks/main.go
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+release:
+  disable: false
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
