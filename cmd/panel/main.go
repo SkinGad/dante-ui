@@ -27,12 +27,16 @@ func main() {
 	if fileDevExists(fileDev) {
 		fileSocksUser = "socksusers.json"
 	}
-	fileName = *flag.String("f", fileSocksUser, "Set path to secret file")
-	publicAddress = *flag.String("a", "nil", "Set public IP")
-	publicPort = *flag.Int("pp", 1080, "Set public proxy port")
+	fileNamePoint := flag.String("f", fileSocksUser, "Set path to secret file")
+	publicAddressPoint := flag.String("a", "nil", "Set public IP")
+	publicPortPoint := flag.Int("pp", 1080, "Set public proxy port")
 	listenAddress := flag.String("la", "0.0.0.0", "Set listen port")
 	listenPort := flag.Int("lp", 8080, "Set listen port")
 	flag.Parse()
+
+	fileName = *fileNamePoint
+	publicAddress = *publicAddressPoint
+	publicPort = *publicPortPoint
 
 	if publicAddress == "nil" {
 		publicAddress = getPublicIP()
